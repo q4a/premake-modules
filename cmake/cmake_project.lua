@@ -45,7 +45,7 @@ function m.generate(prj)
 	p.utf8()
 	for cfg in project.eachconfig(prj) do
 		local target = prj.name..'_'..cmake.cfgname(cfg)
-		local funcn  = 'project_'..target
+		local funcn  = 'project_'..target:gsub("-", "_")
 		_p('function(%s)', funcn)
 		-- _p(1, cmake.cfgname(cfg)..'()')
 		-- p.callArray(m.elements.project, prj, cfg)
