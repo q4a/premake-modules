@@ -129,6 +129,28 @@ function m.links(cfg)
   end
 end
 
+-- Set Dep Link libs
+function m.dependencies(cfg)
+  local dependencies = config.getlinks(cfg, "siblings", "object")
+  if dependencies and #dependencies>0 then
+    _p('')
+    _p(1, 'set(DEP_LIBS ')
+    for _, dep in ipairs(dependencies) do
+      _p(2, dep.filename)
+    end
+    _p(1, ')')
+    local targetname = cmake.targetname(cfg)
+    _p(1, 'target_link_libraries(%s ${DEP_LIBS})', targetname)
+    _p('')
+    _p(1, 'set(DEPS ')
+    for _, dep in ipairs(dependencies) do
+      _p(2, dep.filename..'_'..cmake.cfgname(cfg))
+    end
+    _p(1, ')')
+    _p(1, 'add_dependencies(%s ${DEPS})', targetname)
+  end
+end
+
 -- Generate Call array
 function m.elements.generate(cfg)
   return {
@@ -140,6 +162,7 @@ function m.elements.generate(cfg)
     m.target,
     m.targetprops,
     m.links,
+    m.dependencies,
   }
 end
 
