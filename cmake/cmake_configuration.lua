@@ -115,18 +115,33 @@ function m.includedirs(cfg)
   end
 end
 
--- Set Link libs
-function m.links(cfg)
+-- Set System Link libs
+function m.system_links(cfg)
   local links = config.getlinks(cfg, "system", "fullpath")
   if links and #links>0 then
     _p('')
-    _p(1, 'set(LIBS ')
+    _p(1, 'set(SYSTEM_LIBS ')
     for _, libname in ipairs(links) do
       _p(2, libname)
     end
     _p(1, ')')
     local targetname = cmake.targetname(cfg)
-    _p(1, 'target_link_libraries(%s ${LIBS})', targetname)
+    _p(1, 'target_link_libraries(%s PRIVATE ${SYSTEM_LIBS})', targetname)
+  end
+end
+
+-- Set Sibling Link libs
+function m.sibling_links(cfg)
+  local links = config.getlinks(cfg, "sibling", "basename")
+  if links and #links>0 then
+    _p('')
+    _p(1, 'set(SIBLING_LIBS ')
+    for _, libname in ipairs(links) do
+      _p(2, libname:sub(4)..'_'..cmake.cfgname(cfg))
+    end
+    _p(1, ')')
+    local targetname = cmake.targetname(cfg)
+    _p(1, 'target_link_libraries(%s PRIVATE ${SIBLING_LIBS})', targetname)
   end
 end
 
@@ -140,7 +155,8 @@ function m.elements.generate(cfg)
     m.target,
     m.targetprops,
     m.includedirs,
-    m.links,
+    m.system_links,
+    m.sibling_links,
   }
 end
 
