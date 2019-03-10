@@ -55,20 +55,6 @@ function m.defines(cfg)
   end
 end
 
--- Generate include directories
-function m.includedirs(cfg)
-  if cfg.includedirs and #cfg.includedirs > 0 then
-    _p('')
-    _p(1,'set(INCLUD_DIRS ')
-    for _, includedir in ipairs(cfg.includedirs) do
-      local dirpath = project.getrelative(cfg.project, includedir)
-      _p(2, dirpath)
-    end
-    _p(1,')')
-    _p(1,'include_directories(${INCLUD_DIRS})')
-  end
-end
-
 -- Add executable / libs
 function m.target(cfg)
   local kind = cfg.project.kind
@@ -114,6 +100,21 @@ function m.libdirs(cfg)
   end
 end
 
+-- Generate include directories
+function m.includedirs(cfg)
+  if cfg.includedirs and #cfg.includedirs > 0 then
+    _p('')
+    _p(1,'set(INCLUDE_DIRS ')
+    for _, includedir in ipairs(cfg.includedirs) do
+      local dirpath = project.getrelative(cfg.project, includedir)
+      _p(2, dirpath)
+    end
+    _p(1,')')
+    local targetname = cmake.targetname(cfg)
+    _p(1,'target_include_directories(%s PRIVATE ${INCLUDE_DIRS})', targetname)
+  end
+end
+
 -- Set Link libs
 function m.links(cfg)
   local links = config.getlinks(cfg, "system", "fullpath")
@@ -134,11 +135,11 @@ function m.elements.generate(cfg)
   return {
     m.flags,
     m.defines,
-    m.includedirs,
     m.libdirs,
     m.files,
     m.target,
     m.targetprops,
+    m.includedirs,
     m.links,
   }
 end
