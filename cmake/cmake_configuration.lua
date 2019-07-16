@@ -11,6 +11,11 @@ m.elements = {}
 function m.flags(cfg)
   local cmakeflags = '-Wall'
   local buildType = 'RelWithDebInfo'
+  if cfg.buildcfg == 'Debug' then
+    buildType = 'Debug'
+  elseif cfg.buildcfg == 'Release' then
+    buildType = 'Release'
+  end
   if cfg.flags and #cfg.flags > 0 then
     for _, flag in ipairs(cfg.flags) do
       if flag == 'C++11' then
