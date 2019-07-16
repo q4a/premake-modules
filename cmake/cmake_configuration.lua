@@ -31,6 +31,15 @@ function m.flags(cfg)
       end
     end
   end
+  if cfg.vectorextensions == 'AVX' then
+    _p(1,'if((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))')
+    _p(1,'  add_compile_options(-mavx)')
+    _p(1,'elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")')
+    _p(1,'  add_compile_options(/QxAVX)')
+    _p(1,'elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")')
+    _p(1,'  add_compile_options(/arch:AVX)')
+    _p(1,'endif()')
+  end
   _p(1, 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} %s")', cmakeflags)
   _p(1, 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} %s")', cmakeflags)
   _p(1, 'set(CMAKE_BUILD_TYPE %s)', buildType)
