@@ -60,10 +60,11 @@ end
 -- Generate Defines
 function m.defines(cfg)
   if cfg.defines and #cfg.defines then
+    local targetname = cmake.targetname(cfg)
     _p('')
-    _p(1,'add_definitions(')
+    _p(1,'set_property(TARGET %s PROPERTY COMPILE_DEFINITIONS', targetname)
     for _, define in ipairs(cfg.defines) do
-      _p(2, '-D%s', define)
+      _p(2, '%s', define)
     end
     _p(1,')')
   end
@@ -163,10 +164,10 @@ end
 function m.elements.generate(cfg)
   return {
     m.flags,
-    m.defines,
     m.libdirs,
     m.files,
     m.target,
+    m.defines,
     m.targetprops,
     m.includedirs,
     m.system_links,
