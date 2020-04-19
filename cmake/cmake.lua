@@ -52,7 +52,7 @@ function cmake.generateProject(prj)
   p.eol("\r\n")
   p.indent("  ")
   p.escaper(cmake.esc)
-  if project.iscpp(prj) then
+  if project.iscpp(prj) or project.isc(prj) then
     p.generate(prj, ".cmake", cmake.project.generate)
   end
 end
