@@ -21,7 +21,9 @@ function m.generate(wks)
 	tree.traverse(tr, {
 		onleaf = function(n)
 			local prj = n.project
-			_p('include(%s)', prj.name)
+			if prj.kind ~= p.UTILITY then
+				_p('include(%s)', prj.name)
+			end
 		end,
 
 		onbranch = function(n)
